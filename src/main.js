@@ -21,21 +21,22 @@ const runner = createMissionRunner();
 
 const hub = createHub({
   onSelect: (idx) => launchMission(idx),
+  onInspect: (m) => ui.reveal(m, { skipped: false, first: false }),
   onToast: (msg) => ui.toast(msg),
 });
 hub.hide();
 
 const drive = createDriveWorld({
+  onPlayMission: (idx) => launchMission(idx),
   onSelectMission: (idx) => launchMission(idx),
+  onInspectMission: (m) => ui.reveal(m, { skipped: false, first: false }),
   onToast: (msg) => ui.toast(msg),
 });
 drive.hide();
 
 const shooter = createShooterWorld({
   onPlayMission: (idx) => launchMission(idx),
-  onInspectMission: (m) => {
-    ui.reveal(m, { skipped: false, first: false });
-  },
+  onInspectMission: (m) => ui.reveal(m, { skipped: false, first: false }),
   onToast: (msg) => ui.toast(msg),
 });
 shooter.hide();
@@ -45,7 +46,6 @@ const title = createTitle(['SAKSHAM', 'SHARMA']);
 title.group.position.set(0, 1.35, 0);
 scene.add(title.group);
 
-// Ensure fonts are ready before sampling or re-forming if needed
 document.fonts?.ready?.then(() => {
   title.form(2.4);
 });
@@ -84,17 +84,17 @@ function refreshAllWorlds() {
 }
 
 function setWorldMode(mode) {
-  if (runner.active) return;
+  if (runner.active) runner.exit();
   ui.closeAll();
   store.setWorldMode(mode);
-  globalU.uWarp.value = 0.55;
-  gsap.to(globalU.uWarp, { value: 0, duration: 0.75, ease: 'power3.out' });
+  globalU.uWarp.value = 0.45;
+  gsap.to(globalU.uWarp, { value: 0, duration: 0.7, ease: 'power3.out' });
   showActiveWorld();
   chrome.update();
   const labels = {
-    orrery: '🌌 REALM CORE — Drag to orbit · Click any portal to launch',
-    drive: '🏎️ FORZA PLAYGROUND — WASD / Arrows to drive · Space to drift · Enter at portals',
-    shooter: '🎯 TACTICAL FPS RANGE — Aim & click bots to eliminate & unlock chapters',
+    orrery: '🌌 SOLAR CORE — Drag to rotate · Scroll to zoom · Click any planet or pill below',
+    drive: '🏎️ FORZA PLAYGROUND — WASD to drive · [H] Shockwave · Click top GPS pills to teleport',
+    shooter: '🎯 TACTICAL FPS RANGE — Aim & click to shoot · [1][2][3] Weapons · [E] Play · [F] Story',
   };
   ui.toast(labels[mode] || 'Mode switched');
 }
@@ -106,6 +106,7 @@ const actions = {
   blogs: () => { ui.closeAll(); ui.blogs(); },
   contact: () => { ui.closeAll(); ui.contact(); },
   recruiter: () => { ui.closeAll(); ui.recruiter(actions); },
+  pause: () => { ui.closeAll(); ui.pauseMenu(actions); },
   setMode: (mode) => setWorldMode(mode),
   playMission: (idx) => {
     ui.closeAll();
@@ -129,6 +130,7 @@ ui.onPanel(
       hub.blocked = false;
       drive.blocked = false;
       shooter.blocked = false;
+      chrome.update();
     }
   },
 );
@@ -144,10 +146,10 @@ async function exitBoot({ openRecruiter = false, initialMode = null } = {}) {
   }
   audio.init();
   audio.sfx.boot();
-  gsap.to(bootEl, { autoAlpha: 0, duration: 0.45, onComplete: () => bootEl.remove() });
-  globalU.uWarp.value = 0.85;
-  gsap.to(globalU.uWarp, { value: 0, duration: 1.2, ease: 'power3.out' });
-  await title.explode(0.95);
+  gsap.to(bootEl, { autoAlpha: 0, duration: 0.4, onComplete: () => bootEl.remove() });
+  globalU.uWarp.value = 0.75;
+  gsap.to(globalU.uWarp, { value: 0, duration: 1.0, ease: 'power3.out' });
+  await title.explode(0.85);
   scene.remove(title.group);
   title.dispose();
 
@@ -160,7 +162,7 @@ async function exitBoot({ openRecruiter = false, initialMode = null } = {}) {
   } else if (!store.state.intro && store.state.worldMode === 'orrery') {
     store.state.intro = true;
     store.save();
-    await ui.briefing();
+    await ui.briefing(actions);
   }
 }
 
@@ -180,8 +182,8 @@ async function launchMission(idx) {
   if (mode === 'orrery') {
     await hub.dive(idx);
   } else {
-    globalU.uWarp.value = 0.7;
-    gsap.to(globalU.uWarp, { value: 0, duration: 0.7, ease: 'power2.out' });
+    globalU.uWarp.value = 0.65;
+    gsap.to(globalU.uWarp, { value: 0, duration: 0.65, ease: 'power2.out' });
   }
   hideAllWorlds();
 
@@ -201,11 +203,11 @@ async function launchMission(idx) {
 
     if (mode === 'orrery') {
       hub.awardShards(m);
-      hub.shift(-3.2, 0.8);
+      hub.shift(-3.2, 0.75);
     }
     await ui.reveal(m, { bonus: res.bonus || 0, skipped, first });
     if (mode === 'orrery') {
-      hub.shift(0, 0.8);
+      hub.shift(0, 0.75);
     }
 
     if (store.clearedCount() >= missions.length && first) {
@@ -217,10 +219,24 @@ async function launchMission(idx) {
   }
 }
 
-// Konami Code: ↑ ↑ ↓ ↓ ← → ← → B A -> Unlocks God Mode
+// Universal ESC Key Handler + Konami Code
 const KONAMI = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'KeyB', 'KeyA'];
 let kIdx = 0;
 window.addEventListener('keydown', (e) => {
+  if (e.code === 'Escape' && !inBoot) {
+    if (ui.panelOpen) {
+      ui.closeTop();
+      return;
+    }
+    if (runner.active) {
+      runner.exit();
+      return;
+    }
+    audio.sfx.click();
+    ui.pauseMenu(actions);
+    return;
+  }
+
   if (e.code === KONAMI[kIdx]) {
     kIdx++;
     if (kIdx === KONAMI.length) {

@@ -51,8 +51,8 @@ export function createMissionRunner() {
     <div class="m-top" data-ui>
       <div class="m-title"><b></b><span></span><em class="m-prog"></em></div>
       <div class="m-top-r">
-        <button class="m-skip-quick" type="button" title="Skip mini-game and read chapter">SKIP → STORY</button>
-        <button class="m-exit" type="button" aria-label="Exit mission">✕ EXIT</button>
+        <button class="m-skip-quick" type="button" title="Skip mini-game and read chapter">📖 SKIP → STORY & CERTS</button>
+        <button class="m-exit" type="button" aria-label="Exit mission">← BACK TO WORLD [ESC]</button>
       </div>
     </div>
     <div class="m-timer"><i></i></div>
@@ -285,6 +285,12 @@ export function createMissionRunner() {
 
   return {
     get active() { return active; },
+    exit() {
+      if (active) {
+        audio.sfx.click();
+        finish({ result: 'back' });
+      }
+    },
     start(mission) {
       m = mission;
       mod = games[mission.game];
