@@ -208,7 +208,21 @@ export default {
           hintSet = true;
           ctx.setHint('Tap the screen to open the keyboard, then type the code');
         }
-        if (input.pressed && !finished) ctx.showKeyboard();
+        if (input.pressed && !finished) {
+          ctx.showKeyboard();
+          const hit = ctx.pick(tiles.map((tl) => tl.body));
+          if (hit) {
+            const clickedTile = tiles.find((tl) => tl.body === hit.object);
+            if (clickedTile && clickedTile.i === next) {
+              input.typed.push(clickedTile.ch);
+            } else if (input.touch && tiles[next]) {
+              input.typed.push(tiles[next].ch);
+            }
+          } else if (input.touch && tiles[next]) {
+            input.typed.push(tiles[next].ch);
+          }
+        }
+        ctx.setProgress?.(`${next} / ${N} CHARS`);
 
         if (!finished) {
           for (const raw of input.typed) {

@@ -50,6 +50,11 @@ export default {
       gsap.to(b.scale, { x: on ? 1.08 : 1, z: on ? 1.08 : 1, duration: 0.2 });
     };
     const isSorted = () => bars.every((b) => b.userData.slot === b.userData.val);
+    const updateProg = () => {
+      const ok = bars.filter((b) => b.userData.slot === b.userData.val).length;
+      ctx.setProgress?.(`${ok} / ${N} IN PLACE`);
+    };
+    updateProg();
 
     function swap(a, b) {
       busy = true;
@@ -70,6 +75,7 @@ export default {
           a.position.z = b.position.z = 0;
           setSel(a, false); setSel(b, false);
           busy = false;
+          updateProg();
           fx.ring(new THREE.Vector3(a.position.x, a.position.y, 0), ctx.accent, 1.6, 0.5);
           if (isSorted()) {
             bars.forEach((bar, i) => {

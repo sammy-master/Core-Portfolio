@@ -127,5 +127,13 @@ export const audio = {
     shard: () => [784, 988, 1175, 1568].forEach((f, i) => tone(f, 0.5, 'sine', 0.14, null, i * 0.07)),
     launch: () => { noise(1.0, 150, 2500, 0.3); tone(60, 1.0, 'sawtooth', 0.2, 400); },
     boot: () => tone(110, 1.4, 'sawtooth', 0.12, 440),
+    shot: () => { noise(0.09, 1800, 220, 0.26); tone(220, 0.08, 'sawtooth', 0.22, 55); },
+    hitmark: () => { tone(2100, 0.035, 'triangle', 0.18); tone(2800, 0.04, 'sine', 0.14, null, 0.02); },
+    headshot: () => {
+      tone(1480, 0.09, 'triangle', 0.24);
+      tone(2217, 0.22, 'sine', 0.24, null, 0.045);
+      tone(2960, 0.28, 'sine', 0.16, null, 0.09);
+    },
+    rev: (speedRatio = 0.5) => tone(68 + speedRatio * 140, 0.07, 'sawtooth', 0.05),
   },
 };

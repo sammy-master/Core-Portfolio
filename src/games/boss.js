@@ -90,6 +90,7 @@ export default {
     return {
       update(dt, t) {
         if (ended) return;
+        ctx.setProgress?.(`SHIELDS: ${'◆'.repeat(lives)}${'◇'.repeat(3 - lives)} · SURVIVE ${Math.ceil(ctx.timeLeft())}s`);
 
         // Player movement: pointer + keyboard override
         const pt = planePoint(0);

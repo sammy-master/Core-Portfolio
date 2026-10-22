@@ -8,6 +8,8 @@ import { store } from './engine/store.js';
 import { missions } from './data/content.js';
 import { createTitle } from './world/title.js';
 import { createHub } from './world/hub.js';
+import { createDriveWorld } from './world/drive.js';
+import { createShooterWorld } from './world/shooter.js';
 import { createMissionRunner } from './world/mission.js';
 import { ui } from './ui/ui.js';
 
@@ -16,11 +18,27 @@ audio.setMuted(!!store.state.muted);
 
 // Build 3D systems
 const runner = createMissionRunner();
+
 const hub = createHub({
   onSelect: (idx) => launchMission(idx),
   onToast: (msg) => ui.toast(msg),
 });
 hub.hide();
+
+const drive = createDriveWorld({
+  onSelectMission: (idx) => launchMission(idx),
+  onToast: (msg) => ui.toast(msg),
+});
+drive.hide();
+
+const shooter = createShooterWorld({
+  onPlayMission: (idx) => launchMission(idx),
+  onInspectMission: (m) => {
+    ui.reveal(m, { skipped: false, first: false });
+  },
+  onToast: (msg) => ui.toast(msg),
+});
+shooter.hide();
 
 // Particle title screen in 3D
 const title = createTitle(['SAKSHAM', 'SHARMA']);
@@ -33,25 +51,97 @@ document.fonts?.ready?.then(() => {
 });
 title.form(2.4);
 
+function showActiveWorld() {
+  const mode = store.state.worldMode || 'orrery';
+  if (mode === 'drive') {
+    hub.hide();
+    shooter.hide();
+    drive.show();
+    drive.refresh();
+  } else if (mode === 'shooter') {
+    hub.hide();
+    drive.hide();
+    shooter.show();
+    shooter.refresh();
+  } else {
+    drive.hide();
+    shooter.hide();
+    hub.show();
+    hub.refresh();
+  }
+}
+
+function hideAllWorlds() {
+  hub.hide();
+  drive.hide();
+  shooter.hide();
+}
+
+function refreshAllWorlds() {
+  hub.refresh();
+  drive.refresh();
+  shooter.refresh();
+}
+
+function setWorldMode(mode) {
+  if (runner.active) return;
+  ui.closeAll();
+  store.setWorldMode(mode);
+  globalU.uWarp.value = 0.55;
+  gsap.to(globalU.uWarp, { value: 0, duration: 0.75, ease: 'power3.out' });
+  showActiveWorld();
+  chrome.update();
+  const labels = {
+    orrery: '🌌 REALM CORE — Drag to orbit · Click any portal to launch',
+    drive: '🏎️ FORZA PLAYGROUND — WASD / Arrows to drive · Space to drift · Enter at portals',
+    shooter: '🎯 TACTICAL FPS RANGE — Aim & click bots to eliminate & unlock chapters',
+  };
+  ui.toast(labels[mode] || 'Mode switched');
+}
+
 const actions = {
   card: () => { ui.closeAll(); ui.card(); },
   vault: () => { ui.closeAll(); ui.vault(); },
+  certs: () => { ui.closeAll(); ui.certs(); },
+  blogs: () => { ui.closeAll(); ui.blogs(); },
   contact: () => { ui.closeAll(); ui.contact(); },
-  recruiter: () => { ui.closeAll(); ui.recruiter(); },
+  recruiter: () => { ui.closeAll(); ui.recruiter(actions); },
+  setMode: (mode) => setWorldMode(mode),
+  playMission: (idx) => {
+    ui.closeAll();
+    launchMission(idx);
+  },
+  inspectMission: (m) => {
+    ui.closeAll();
+    ui.reveal(m, { skipped: false, first: false });
+  },
 };
 
 const chrome = ui.chrome(actions);
 ui.onPanel(
-  () => { hub.blocked = true; },
-  (_entry, remaining) => { if (remaining === 0) hub.blocked = false; },
+  () => {
+    hub.blocked = true;
+    drive.blocked = true;
+    shooter.blocked = true;
+  },
+  (_entry, remaining) => {
+    if (remaining === 0) {
+      hub.blocked = false;
+      drive.blocked = false;
+      shooter.blocked = false;
+    }
+  },
 );
 
 let inBoot = true;
 const bootEl = document.getElementById('boot');
 
-async function exitBoot(openRecruiter = false) {
+async function exitBoot({ openRecruiter = false, initialMode = null } = {}) {
   if (!inBoot) return;
   inBoot = false;
+  if (initialMode) {
+    store.setWorldMode(initialMode);
+  }
   audio.init();
   audio.sfx.boot();
   gsap.to(bootEl, { autoAlpha: 0, duration: 0.45, onComplete: () => bootEl.remove() });
@@ -61,51 +151,68 @@ async function exitBoot(openRecruiter = false) {
   scene.remove(title.group);
   title.dispose();
 
-  hub.show();
-  hub.refresh();
+  showActiveWorld();
   chrome.show();
   chrome.update();
 
   if (openRecruiter) {
-    ui.recruiter();
-  } else if (!store.state.intro) {
+    ui.recruiter(actions);
+  } else if (!store.state.intro && store.state.worldMode === 'orrery') {
     store.state.intro = true;
     store.save();
     await ui.briefing();
   }
 }
 
-document.getElementById('boot-enter').addEventListener('click', () => exitBoot(false));
-document.getElementById('boot-recruiter').addEventListener('click', () => exitBoot(true));
+document.getElementById('boot-enter')?.addEventListener('click', () => exitBoot({ initialMode: 'orrery' }));
+document.getElementById('boot-drive')?.addEventListener('click', () => exitBoot({ initialMode: 'drive' }));
+document.getElementById('boot-shooter')?.addEventListener('click', () => exitBoot({ initialMode: 'shooter' }));
+document.getElementById('boot-recruiter')?.addEventListener('click', () => exitBoot({ openRecruiter: true, initialMode: 'orrery' }));
 
 async function launchMission(idx) {
   const m = missions[idx];
   if (!m || runner.active) return;
+  ui.closeAll();
   chrome.hide();
   chrome.hideHint();
-  await hub.dive(idx);
-  hub.hide();
+
+  const mode = store.state.worldMode || 'orrery';
+  if (mode === 'orrery') {
+    await hub.dive(idx);
+  } else {
+    globalU.uWarp.value = 0.7;
+    gsap.to(globalU.uWarp, { value: 0, duration: 0.7, ease: 'power2.out' });
+  }
+  hideAllWorlds();
 
   const res = await runner.start(m);
-  hub.show();
-  hub.settle();
+
+  showActiveWorld();
+  if (mode === 'orrery') {
+    hub.settle();
+  }
   chrome.show();
 
   if (res.result === 'win' || res.result === 'skip') {
     const skipped = res.result === 'skip';
     const first = store.markCleared(m.id, skipped, res.bonus || 0);
-    hub.refresh();
+    refreshAllWorlds();
     chrome.update();
-    hub.awardShards(m);
-    hub.shift(-3.2, 0.8);
+
+    if (mode === 'orrery') {
+      hub.awardShards(m);
+      hub.shift(-3.2, 0.8);
+    }
     await ui.reveal(m, { bonus: res.bonus || 0, skipped, first });
-    hub.shift(0, 0.8);
+    if (mode === 'orrery') {
+      hub.shift(0, 0.8);
+    }
 
     if (store.clearedCount() >= missions.length && first) {
       ui.finale(actions);
     }
   } else {
-    hub.refresh();
+    refreshAllWorlds();
     chrome.update();
   }
 }
@@ -121,7 +228,7 @@ window.addEventListener('keydown', (e) => {
       store.state.god = !store.state.god;
       store.save();
       audio.sfx.win();
-      hub.refresh();
+      refreshAllWorlds();
       chrome.update();
       ui.toast(store.state.god ? '⚡ GOD MODE UNLOCKED: All shards & boss active!' : 'God Mode disabled');
     }

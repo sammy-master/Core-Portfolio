@@ -100,9 +100,10 @@ export const fx = {
     rings.push(mesh);
   },
   shake(amount = 0.3, dur = 0.35) { shakeAmt = Math.max(shakeAmt, amount); shakeT = shakeDur = dur; },
-  flash(color = '#ffffff', strength = 0.5) {
+  flash(color = '#ffffff', strength = 0.14) {
     flashEl.style.background = color;
-    gsap.fromTo(flashEl, { opacity: strength }, { opacity: 0, duration: 0.5, ease: 'power2.out' });
+    const capped = Math.min(strength, 0.16);
+    gsap.fromTo(flashEl, { opacity: capped }, { opacity: 0, duration: 0.45, ease: 'power2.out' });
   },
   /** Floating DOM text anchored to a world position. */
   pop(worldPos, text, color = '#ffffff') {

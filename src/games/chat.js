@@ -111,6 +111,7 @@ export default {
     // Spawn initial wave
     spawnBubble(true);
     spawnBubble(true);
+    ctx.setProgress?.(`0 / ${GOAL} REPLIED`);
 
     return {
       update(dt, t) {
@@ -157,6 +158,7 @@ export default {
               removeBubble(b);
               lightPip(score);
               score++;
+              ctx.setProgress?.(`${score} / ${GOAL} REPLIED`);
               if (score >= GOAL) {
                 ended = true;
                 ctx.win();
