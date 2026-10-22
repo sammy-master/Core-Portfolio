@@ -68,13 +68,11 @@ export function createHub({ onSelect, onInspect, onToast }) {
     if (m.boss) g.scale.setScalar(1.35);
     group.add(g);
 
-    // Clickable DOM label above/below planet
+    // Minimalist clickable DOM label below planet
     const lab = document.createElement('div');
     lab.className = 'plabel';
     lab.setAttribute('data-ui', '');
-    lab.innerHTML = `
-      <div class="pl-top"><b>${pad(m.n)}</b><span class="t">${m.title}</span></div>
-      <span class="more">${m.year} · ▶ Click to Play</span>`;
+    lab.innerHTML = `<div class="pl-top"><b>${pad(m.n)}</b><span class="t">${m.title}</span></div>`;
     lab.addEventListener('pointerenter', () => {
       if (!blocked && !diving) { hovered = i; audio.sfx.hover(); }
     });
@@ -88,12 +86,12 @@ export function createHub({ onSelect, onInspect, onToast }) {
     portals.push({ m, i, ang, rad, g, ringA, ringB, wire, solid, halo, hit, ringMat, orbitMat, lab, hover: 0, cleared: false, locked: false, next: false });
   });
 
-  // ---- Solar Quick-Jump Strip (10 numbered mission pills for instant access) ----
+  // ---- Minimalist Solar Chapter Bar (Compact 01..10 pills, expands title on hover) ----
   const solarBar = document.createElement('div');
   solarBar.className = 'solar-bar';
   solarBar.setAttribute('data-ui', '');
   solarBar.innerHTML = `
-    <span class="sb-lbl">SOLAR ORBITS:</span>
+    <span class="sb-lbl">CHAPTER</span>
     <div class="sb-list">
       ${missions.map((m, i) => `
         <button type="button" class="sb-pill" data-idx="${i}" style="--c:${m.color}" title="${pad(m.n)} · ${m.title} (${m.year})">
