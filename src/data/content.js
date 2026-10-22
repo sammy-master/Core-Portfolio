@@ -35,7 +35,7 @@ export const profile = {
   ],
   highlights: [
     { k: '16+', l: 'Shipped Projects', sub: 'Live on Vercel & GitHub' },
-    { k: '37+', l: 'Certifications', sub: 'Google, Meta, Red Hat, AMD ROCm' },
+    { k: '36', l: 'Certifications', sub: 'Google, Meta, Red Hat, AMD ROCm' },
     { k: 'SIH \'26', l: 'National Hackathon', sub: 'Selected to represent PCU Pune' },
     { k: 'BOSCH', l: 'Industry Intern', sub: 'Engineering internship (2025)' },
   ],
@@ -567,7 +567,6 @@ export const certs = [
   { ...C('AMD ROCm Certified Associate', 'AMD GPU Computing', 'AMD ROCm Certified Associate'), hot: true, cat: 'Flagship' },
   { ...C('Smart India Hackathon 2026 — Participant', 'Govt. of India · MIC', 'SIH 2026 Participation', 'SIH_2026_Participation_Certificate_Saksham_Sharma'), hot: true, cat: 'Flagship' },
   { ...C('QC IUCEE Quantum Certificate', 'IUCEE Quantum Computing', 'QC IUCEE Certificate (Quantum)'), hot: true, cat: 'Flagship' },
-  { ...C('Google Cybersecurity Specialization (8 Courses)', 'Google · Coursera', 'Coursera Google Cybersecurity Specilization'), hot: true, cat: 'Cybersecurity' },
   { ...C('Foundations of Cybersecurity', 'Google · Coursera', 'Coursera Foundations of Cybersecurity'), cat: 'Cybersecurity' },
   { ...C('Manage Security Risks', 'Google · Coursera', 'Coursera Manage Security Risks'), cat: 'Cybersecurity' },
   { ...C('Networks and Network Security', 'Google · Coursera', 'Coursera Networks and Network Security'), cat: 'Cybersecurity' },
