@@ -6,7 +6,7 @@
   "description": "SAKSHAM // CORE - a WebGL mission-based interactive portfolio",
   "scripts": {
     "dev": "vite --host",
-    "build": "vite build && node scripts/obfuscate.mjs",
+    "build": "vite build",
     "preview": "vite preview --host"
   },
   "dependencies": {
