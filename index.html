@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>SAKSHAM SHARMA // THE CORE — Interactive Mission Portfolio</title>
+  <meta name="description" content="Saksham Sharma — B.Tech CSE Student & Builder. An interactive 3D WebGL mission-based portfolio where 10 micro-games unlock my journey, skills, and projects." />
+  <meta name="theme-color" content="#03040b" />
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cpolygon points='32,4 58,19 58,45 32,60 6,45 6,19' fill='%23070b1c' stroke='%2322e4ff' stroke-width='4'/%3E%3Ccircle cx='32' cy='32' r='10' fill='%233dffb5'/%3E%3C/svg%3E" />
+</head>
+<body>
+  <canvas id="gl" aria-label="Interactive 3D portfolio canvas"></canvas>
+  <div id="labels" aria-hidden="true"></div>
+  <div id="stage-ui"></div>
+  <div id="ui"></div>
+  <div id="panel-root"></div>
+
+  <!-- Boot / Particle Title Screen -->
+  <div id="boot" data-ui>
+    <div class="boot-top">
+      <span class="boot-badge"><i></i> SYSTEM ONLINE // WEBGL 2.0</span>
+      <span class="boot-loc">PUNE, IN · B.TECH CSE</span>
+    </div>
+    <div class="boot-center">
+      <p class="boot-kicker">INTERACTIVE MISSION PORTFOLIO</p>
+      <h1 class="sr-only">Saksham Sharma</h1>
+      <p class="boot-sub">10 micro-missions · 5–10 seconds each · unlock the Core</p>
+      <div class="boot-cta">
+        <button id="boot-enter" class="btn primary big pulse" type="button">
+          <span>PRESS START</span><i>▸</i>
+        </button>
+        <button id="boot-recruiter" class="btn ghost" type="button">
+          Instant Recruiter View ↗
+        </button>
+      </div>
+    </div>
+    <div class="boot-foot">
+      <span>SYNTHESIZED WEB AUDIO · CUSTOM GLSL SHADERS · ZERO TEMPLATES</span>
+      <span class="konami-hint">SECRET: ↑↑↓↓←→←→BA</span>
+    </div>
+  </div>
+
+  <!-- Hidden input bridge for mobile virtual keyboard during typing mission -->
+  <input id="kb" type="text" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" aria-hidden="true" tabindex="-1" />
+
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>
