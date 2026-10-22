@@ -133,7 +133,6 @@ export const missions = [
       { name: 'Overleaf & LaTeX', lvl: 68, cat: 'code' },
     ],
     certs: [
-      C('B.Tech CSE Admission — PCU Pune', 'Pimpri Chinchwad University', 'PCU Admission', 'PCU-SIH26-052_Saksham_Sharma_Selection_Certificate'),
       C('Write Smarter with Overleaf & LaTeX', 'Coursera', 'Coursera Write smarter with overleaf and latex'),
     ],
     projects: [],
