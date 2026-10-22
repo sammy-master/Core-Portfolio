@@ -187,15 +187,15 @@ html, body {
   background: var(--glass-strong); border: 1px solid var(--border);
   backdrop-filter: blur(18px);
 }
-.mode-btn {
+.mode-switch button, .mode-btn {
   display: inline-flex; align-items: center; gap: 0.38rem;
   padding: 0.4rem 0.82rem; border-radius: 999px; border: 1px solid transparent;
   background: transparent; color: var(--muted); cursor: pointer;
   font-family: var(--font-mono); font-size: 0.7rem; font-weight: 700;
   letter-spacing: 0.06em; transition: all 0.2s ease;
 }
-.mode-btn:hover { color: #fff; background: rgba(255, 255, 255, 0.06); }
-.mode-btn.active {
+.mode-switch button:hover, .mode-btn:hover { color: #fff; background: rgba(255, 255, 255, 0.06); }
+.mode-switch button.active, .mode-btn.active {
   background: linear-gradient(135deg, rgba(34, 228, 255, 0.26), rgba(61, 255, 181, 0.22));
   border-color: var(--cyan); color: #fff;
   box-shadow: 0 0 18px rgba(34, 228, 255, 0.28);
@@ -457,164 +457,176 @@ html, body {
 
 /* ---------- Forza Playground HUD ---------- */
 .drive-hud {
+  display: none !important;
   position: fixed; inset: 0; z-index: 18; pointer-events: none;
 }
+.drive-hud.open {
+  display: block !important;
+}
+
 .drive-top-banner {
   position: absolute; top: 4.5rem; left: 50%; transform: translateX(-50%);
   display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; justify-content: center;
   padding: 0.45rem 1.1rem; border-radius: 999px;
-  background: rgba(7, 12, 28, 0.82); border: 1px solid var(--border);
+  background: rgba(7, 12, 28, 0.88); border: 1px solid var(--border);
   backdrop-filter: blur(14px); font-family: var(--font-mono); font-size: 0.72rem;
+  z-index: 20;
 }
 .dt-badge { color: var(--cyan); font-weight: 700; }
 .dt-title { color: #fff; font-weight: 700; }
 .dt-hint { color: var(--muted); }
 
 .drive-prompt {
-  position: absolute; bottom: 6.2rem; left: 50%; transform: translateX(-50%);
-  pointer-events: auto;
+  display: none !important;
+  position: absolute; bottom: 5.6rem; left: 50%; transform: translateX(-50%);
+  pointer-events: auto; z-index: 24;
+  padding: 1rem 1.4rem; border-radius: 18px;
+  background: rgba(8, 14, 34, 0.94); border: 1.5px solid var(--cyan);
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.8), 0 0 28px rgba(34, 228, 255, 0.35);
+  text-align: center; min-width: 290px;
 }
-.dp-card {
-  padding: 1rem 1.35rem; border-radius: 18px;
-  background: rgba(8, 14, 34, 0.92); border: 1.5px solid var(--cyan);
-  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.75), 0 0 28px rgba(34, 228, 255, 0.28);
-  text-align: center; min-width: 280px;
+.drive-prompt.open {
+  display: flex !important;
+  flex-direction: column; align-items: center; gap: 0.55rem;
 }
-.dp-tag { display: block; font-family: var(--font-mono); font-size: 0.68rem; color: var(--cyan); letter-spacing: 0.16em; }
-.dp-card strong { display: block; font-family: var(--font-display); font-size: 1.1rem; margin: 0.2rem 0; }
-.dp-card p { font-size: 0.8rem; color: var(--muted); margin-bottom: 0.7rem; }
-.dp-btns { display: flex; gap: 0.5rem; justify-content: center; }
+.dp-meta { display: flex; align-items: center; gap: 0.5rem; }
+.dp-meta b { font-family: var(--font-mono); font-size: 0.76rem; color: var(--cyan); }
+.dp-meta span { font-family: var(--font-display); font-size: 1rem; color: #fff; }
+.dp-btns { display: flex; gap: 0.5rem; justify-content: center; margin-top: 0.2rem; }
 
 .forza-dial {
   position: absolute; right: 1.5rem; bottom: 4.8rem;
-  width: 190px; height: 190px;
-  display: flex; align-items: center; justify-content: center;
-  pointer-events: auto;
+  display: flex; flex-direction: column; align-items: center; gap: 0.35rem;
+  padding: 0.85rem 1.25rem; border-radius: 20px;
+  background: var(--glass-strong); border: 1px solid var(--border);
+  backdrop-filter: blur(18px); pointer-events: auto; z-index: 20;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.65);
 }
-.fd-arc { position: absolute; inset: 0; width: 100%; height: 100%; }
-.fd-center {
-  position: relative; z-index: 2; text-align: center;
-  display: flex; flex-direction: column; align-items: center;
+.fd-top { display: flex; align-items: baseline; gap: 0.85rem; }
+.fd-gear {
+  font-family: var(--font-display); font-weight: 900; font-size: 1.6rem;
+  color: var(--amber); line-height: 1;
 }
-.fd-speed {
-  font-family: var(--font-display); font-weight: 900; font-size: 2.35rem;
-  line-height: 1; color: #fff; text-shadow: 0 0 18px rgba(34, 228, 255, 0.5);
+.fd-spd { display: flex; align-items: baseline; gap: 0.25rem; }
+.fd-spd b {
+  font-family: var(--font-display); font-weight: 900; font-size: 2.1rem;
+  line-height: 1; color: #fff; text-shadow: 0 0 16px rgba(34, 228, 255, 0.5);
 }
-.fd-unit { font-family: var(--font-mono); font-size: 0.64rem; color: var(--muted); letter-spacing: 0.18em; }
-.fd-gear-box {
-  margin-top: 0.25rem; display: inline-flex; align-items: center; gap: 0.35rem;
-  padding: 0.15rem 0.55rem; border-radius: 99px;
-  background: rgba(34, 228, 255, 0.15); border: 1px solid rgba(34, 228, 255, 0.4);
+.fd-spd em {
+  font-style: normal; font-family: var(--font-mono); font-size: 0.68rem;
+  color: var(--muted); letter-spacing: 0.14em;
 }
-.fd-gear-lbl { font-family: var(--font-mono); font-size: 0.58rem; color: var(--muted); }
-.fd-gear { font-family: var(--font-display); font-weight: 800; font-size: 0.82rem; color: var(--cyan); }
-.fd-drift {
-  position: absolute; top: -1.4rem; left: 50%; transform: translateX(-50%);
-  font-family: var(--font-mono); font-size: 0.72rem; font-weight: 700;
-  color: var(--amber); white-space: nowrap; opacity: 0.4; transition: opacity 0.2s, transform 0.2s;
+.fd-rpm {
+  width: 100%; height: 5px; border-radius: 99px;
+  background: rgba(255, 255, 255, 0.12); overflow: hidden;
 }
-.fd-drift.hot { opacity: 1; transform: translateX(-50%) scale(1.08); text-shadow: 0 0 14px var(--amber); }
-.fd-boost-btn {
-  position: absolute; bottom: -0.6rem; left: 50%; transform: translateX(-50%);
-  padding: 0.3rem 0.75rem; border-radius: 99px;
-  background: rgba(255, 194, 61, 0.18); border: 1px solid var(--amber);
-  color: var(--amber); font-family: var(--font-mono); font-weight: 700; font-size: 0.66rem;
-  cursor: pointer; white-space: nowrap;
+.fd-rpm i {
+  display: block; width: 100%; height: 100%;
+  transform-origin: left center; transform: scaleX(0.12);
+  background: linear-gradient(90deg, var(--cyan), var(--mint), var(--amber), var(--danger));
 }
+.fd-sub {
+  font-family: var(--font-mono); font-size: 0.64rem; color: var(--muted);
+  white-space: nowrap; letter-spacing: 0.08em;
+}
+#fd-drift { color: var(--amber); }
 
 .drive-touch {
   position: absolute; left: 1rem; right: 1rem; bottom: 4.8rem;
   display: none; align-items: flex-end; justify-content: space-between;
-  pointer-events: none;
+  pointer-events: none; z-index: 22;
 }
-.dt-pad, .dt-pedals { display: flex; gap: 0.5rem; pointer-events: auto; }
-.dt-btn {
-  min-width: 58px; height: 54px; padding: 0 0.85rem; border-radius: 16px;
-  background: rgba(10, 16, 38, 0.82); border: 1px solid var(--border);
+.dt-left, .dt-right { display: flex; gap: 0.5rem; pointer-events: auto; }
+.dt-left button, .dt-right button {
+  min-width: 58px; height: 52px; padding: 0 0.85rem; border-radius: 16px;
+  background: rgba(10, 16, 38, 0.88); border: 1px solid var(--border);
   color: #fff; font-family: var(--font-mono); font-weight: 700; font-size: 0.82rem;
+  cursor: pointer;
 }
-.dt-gas { background: rgba(61, 255, 181, 0.22); border-color: var(--mint); }
-.dt-drift { background: rgba(255, 194, 61, 0.2); border-color: var(--amber); }
+.dt-right .gas { background: rgba(61, 255, 181, 0.22); border-color: var(--mint); }
+.dt-right .boost { background: rgba(255, 194, 61, 0.2); border-color: var(--amber); }
 
 /* ---------- Tactical FPS Range HUD ---------- */
 .shooter-hud {
+  display: none !important;
   position: fixed; inset: 0; z-index: 18; pointer-events: none;
 }
-.sh-top {
+.shooter-hud.open {
+  display: block !important;
+}
+
+.sh-stats {
   position: absolute; top: 4.4rem; left: 50%; transform: translateX(-50%);
-  display: flex; gap: 0.65rem; flex-wrap: wrap; justify-content: center;
+  display: flex; gap: 0.65rem; align-items: center; justify-content: center;
+  flex-wrap: wrap; pointer-events: auto; z-index: 20;
 }
-.sh-stat {
-  padding: 0.38rem 0.85rem; border-radius: 12px;
-  background: rgba(8, 13, 30, 0.82); border: 1px solid var(--border);
-  font-family: var(--font-mono); font-size: 0.7rem; display: flex; gap: 0.45rem; align-items: baseline;
+.sh-stats > div {
+  display: flex; align-items: baseline; gap: 0.45rem;
+  padding: 0.36rem 0.85rem; border-radius: 999px;
+  background: var(--glass-strong); border: 1px solid var(--border);
+  backdrop-filter: blur(16px); font-family: var(--font-mono); font-size: 0.7rem;
 }
-.sh-stat span { color: var(--muted); }
-.sh-stat b { color: var(--cyan); font-size: 0.88rem; }
-.sh-center-msg {
-  position: absolute; top: 7.1rem; left: 50%; transform: translateX(-50%);
-  font-family: var(--font-mono); font-size: 0.72rem; color: var(--muted);
-  background: rgba(6, 10, 24, 0.7); padding: 0.3rem 0.85rem; border-radius: 99px;
-  white-space: nowrap;
-}
-.sh-banner {
-  position: absolute; top: 22%; left: 50%; transform: translateX(-50%);
-  font-family: var(--font-display); font-weight: 900; font-size: clamp(1.5rem, 3.8vw, 2.6rem);
-  color: var(--amber); text-shadow: 0 0 28px rgba(255, 194, 61, 0.75);
-  opacity: 0; pointer-events: none;
-}
+.sh-stats span { color: var(--muted); }
+.sh-stats b { color: var(--cyan); font-size: 0.86rem; }
+
 .killfeed {
-  position: absolute; top: 4.5rem; right: 1.2rem;
+  position: absolute; top: 4.4rem; right: 1.2rem;
   display: flex; flex-direction: column; gap: 0.35rem; align-items: flex-end;
+  pointer-events: none; z-index: 20;
 }
 .kf-item {
+  display: flex; align-items: center; gap: 0.45rem;
   padding: 0.32rem 0.75rem; border-radius: 8px;
-  background: rgba(8, 12, 28, 0.86); border-right: 3px solid var(--cyan);
-  font-family: var(--font-mono); font-size: 0.7rem; display: flex; gap: 0.4rem; align-items: center;
+  background: rgba(8, 12, 28, 0.88); border: 1px solid rgba(255, 255, 255, 0.12);
+  border-right: 3px solid var(--cyan);
+  font-family: var(--font-mono); font-size: 0.7rem; backdrop-filter: blur(12px);
 }
-.kf-killer { color: var(--mint); font-weight: 700; }
-.kf-weap { color: var(--amber); }
-.kf-victim { color: #fff; font-weight: 700; }
+.kf-item.hs { border-right-color: var(--danger); }
+.kf-item .me { color: var(--mint); font-weight: 700; }
+.kf-item i { font-style: normal; color: var(--amber); }
+.kf-item .victim { color: #fff; }
 
 .xhair {
   position: fixed; left: 50%; top: 50%; width: 28px; height: 28px;
-  transform: translate(-50%, -50%); pointer-events: none;
-  transition: transform 0.08s ease;
+  transform: translate(-50%, -50%); pointer-events: none; z-index: 25;
 }
-.xhair.recoil { transform: translate(-50%, -50%) scale(1.35); }
 .xhair i { position: absolute; background: var(--mint); box-shadow: 0 0 6px var(--mint); }
-.xh-t { left: 13px; top: 0; width: 2px; height: 8px; }
-.xh-b { left: 13px; bottom: 0; width: 2px; height: 8px; }
-.xh-l { top: 13px; left: 0; width: 8px; height: 2px; }
-.xh-r { top: 13px; right: 0; width: 8px; height: 2px; }
-.xh-dot { left: 12px; top: 12px; width: 4px; height: 4px; border-radius: 50%; }
+.xhair .t { left: 13px; top: 0; width: 2px; height: 8px; }
+.xhair .b { left: 13px; bottom: 0; width: 2px; height: 8px; }
+.xhair .l { top: 13px; left: 0; width: 8px; height: 2px; }
+.xhair .r { top: 13px; right: 0; width: 8px; height: 2px; }
+.xhair .dot {
+  position: absolute; left: 12px; top: 12px; width: 4px; height: 4px;
+  border-radius: 50%; background: #fff; box-shadow: 0 0 6px #fff;
+}
 
 .hitmark {
-  position: fixed; left: 50%; top: 50%; width: 24px; height: 24px;
-  transform: translate(-50%, -50%) rotate(45deg);
+  position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
+  font-family: var(--font-display); font-weight: 900; font-size: 1.25rem;
+  color: var(--danger); text-shadow: 0 0 10px var(--danger);
   opacity: 0; pointer-events: none; transition: opacity 0.08s;
 }
 .hitmark.show { opacity: 1; }
-.hitmark i { position: absolute; background: #fff; }
-.hitmark.crit i { background: var(--danger); box-shadow: 0 0 8px var(--danger); }
-.hm-1 { left: 11px; top: 0; width: 2px; height: 7px; }
-.hm-2 { left: 11px; bottom: 0; width: 2px; height: 7px; }
-.hm-3 { top: 11px; left: 0; width: 7px; height: 2px; }
-.hm-4 { top: 11px; right: 0; width: 7px; height: 2px; }
 
 .sh-target {
-  position: absolute; bottom: 5.8rem; left: 50%; transform: translateX(-50%);
-  pointer-events: auto;
+  display: none !important;
+  position: absolute; bottom: 5.4rem; left: 50%; transform: translateX(-50%);
+  pointer-events: auto; z-index: 24;
+  padding: 1rem 1.4rem; border-radius: 18px;
+  background: rgba(8, 14, 34, 0.94); border: 1.5px solid var(--mint);
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.8); text-align: center;
+  max-width: min(480px, 92vw);
 }
-.sht-card {
-  padding: 0.95rem 1.35rem; border-radius: 18px;
-  background: rgba(8, 14, 34, 0.92); border: 1.5px solid var(--mint);
-  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.75); text-align: center;
+.sh-target.open {
+  display: flex !important;
+  flex-direction: column; align-items: center; gap: 0.5rem;
 }
-.sht-tag { display: block; font-family: var(--font-mono); font-size: 0.68rem; color: var(--mint); letter-spacing: 0.14em; }
-.sht-card strong { display: block; font-family: var(--font-display); font-size: 1.05rem; margin: 0.2rem 0; }
-.sht-card p { font-size: 0.78rem; color: var(--muted); margin-bottom: 0.65rem; }
-.sht-btns { display: flex; gap: 0.5rem; justify-content: center; flex-wrap: wrap; }
+.sht-head { display: flex; align-items: center; gap: 0.5rem; }
+.sht-head b { font-family: var(--font-mono); font-size: 0.76rem; color: var(--mint); }
+.sht-head span { font-family: var(--font-display); font-size: 0.95rem; color: #fff; }
+.sht-head em { font-style: normal; font-family: var(--font-mono); font-size: 0.64rem; color: var(--amber); }
+#sht-desc { font-size: 0.78rem; color: var(--muted); line-height: 1.45; }
+.sht-btns { display: flex; gap: 0.5rem; justify-content: center; margin-top: 0.2rem; flex-wrap: wrap; }
 
 .sh-weapon {
   position: absolute; right: 1.5rem; bottom: 4.8rem;
@@ -1150,16 +1162,17 @@ html, body {
 @media (max-width: 900px) {
   .card-grid, .blog-layout, .rec-2col { grid-template-columns: 1fr; }
   .drive-touch { display: flex; }
-  .forza-dial { width: 145px; height: 145px; right: 1rem; bottom: 9.2rem; }
-  .fd-speed { font-size: 1.75rem; }
+  .forza-dial { right: 1rem; bottom: 8.8rem; padding: 0.65rem 0.95rem; }
+  .fd-spd b { font-size: 1.65rem; }
 }
 
 @media (max-width: 720px) {
   .dock button span { display: none; }
   .dock button { padding: 0.58rem 0.82rem; font-size: 0.92rem; }
   .brand-t, .clear-c em, .konami-hint, .lv-r { display: none; }
-  .mode-btn span:not(.m-ic) { display: none; }
-  .mode-btn { padding: 0.42rem 0.65rem; font-size: 0.88rem; }
+  .mode-switch button span, .mode-btn span { display: none; }
+  .mode-switch button, .mode-btn { padding: 0.42rem 0.65rem; font-size: 0.88rem; }
   .panel-wrap.side { justify-content: center; }
   .drive-top-banner .dt-hint { display: none; }
+  .boot-cta .btn { padding: 0.72rem 1.1rem; font-size: 0.78rem; }
 }

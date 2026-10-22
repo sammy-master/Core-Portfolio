@@ -118,6 +118,7 @@ export function createShooterWorld({ onPlayMission, onInspectMission }) {
   const hud = document.createElement('div');
   hud.className = 'shooter-hud';
   hud.setAttribute('data-ui', '');
+  hud.style.display = 'none'; // Initially hidden
   hud.innerHTML = `
     <div class="xhair" id="xhair">
       <i class="t"></i><i class="b"></i><i class="l"></i><i class="r"></i><span class="dot"></span>
@@ -294,6 +295,7 @@ export function createShooterWorld({ onPlayMission, onInspectMission }) {
     show() {
       visible = true;
       root.visible = true;
+      hud.style.display = 'block';
       hud.classList.add('open');
       setNebula('#1f0a2e', '#0a3854', 0.56);
       document.body.style.cursor = 'none';
@@ -301,8 +303,16 @@ export function createShooterWorld({ onPlayMission, onInspectMission }) {
     hide() {
       visible = false;
       root.visible = false;
+      hud.style.display = 'none';
       hud.classList.remove('open');
+      targetBox.classList.remove('open');
       document.body.style.cursor = '';
+    },
+    refresh() {
+      bots.forEach((b) => {
+        const clr = store.isCleared(b.m.id);
+        b.torsoMat.color.set(clr ? '#3dffb5' : b.m.color);
+      });
     },
     set blocked(v) {
       blocked = v;

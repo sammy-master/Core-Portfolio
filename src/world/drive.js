@@ -153,6 +153,7 @@ export function createDriveWorld({ onPlayMission, onInspectMission }) {
   const hud = document.createElement('div');
   hud.className = 'drive-hud';
   hud.setAttribute('data-ui', '');
+  hud.style.display = 'none'; // Initially hidden
   hud.innerHTML = `
     <div class="drive-prompt" id="drive-prompt">
       <div class="dp-meta"><b id="dp-num">01</b><span id="dp-title">HELLO, WORLD</span></div>
@@ -351,6 +352,7 @@ export function createDriveWorld({ onPlayMission, onInspectMission }) {
     show() {
       visible = true;
       root.visible = true;
+      hud.style.display = 'block';
       hud.classList.add('open');
       setNebula('#0d1f44', '#084c61', 0.58);
       document.body.style.cursor = 'default';
@@ -358,8 +360,16 @@ export function createDriveWorld({ onPlayMission, onInspectMission }) {
     hide() {
       visible = false;
       root.visible = false;
+      hud.style.display = 'none';
       hud.classList.remove('open');
+      promptEl.classList.remove('open');
       touchKeys.clear();
+    },
+    refresh() {
+      gates.forEach((gt) => {
+        const clr = store.isCleared(gt.m.id);
+        gt.padRing.material.color.set(clr ? '#3dffb5' : gt.m.color);
+      });
     },
     set blocked(v) { blocked = v; },
   };
