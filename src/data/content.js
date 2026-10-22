@@ -161,7 +161,7 @@ export const missions = [
       { name: 'Java & Object-Oriented Programming', lvl: 65, cat: 'code' },
     ],
     certs: [
-      C('Programming with C++', 'Coursera', 'Coursera Programming with c++'),
+      C('Programming with C++', 'Coursera', 'Coursera Programming with CPP'),
       C('Java for Beginners', 'Coursera', 'Coursera Java for Beginners'),
     ],
     projects: [
@@ -594,7 +594,7 @@ export const certs = [
   { ...C('Python Data Structures', 'Univ. of Michigan · Coursera', 'Coursera Python Data Structures'), cat: 'Languages' },
   { ...C('Using Python to Access Web Data', 'Univ. of Michigan · Coursera', 'Coursera Using python to access Web Data'), cat: 'Languages' },
   { ...C('Using Databases with Python', 'Univ. of Michigan · Coursera', 'Coursera Using DB with Python'), cat: 'Languages' },
-  { ...C('Programming with C++', 'Coursera', 'Coursera Programming with c++'), cat: 'Languages' },
+  { ...C('Programming with C++', 'Coursera', 'Coursera Programming with CPP'), cat: 'Languages' },
   { ...C('Java for Beginners', 'Coursera', 'Coursera Java for Beginners'), cat: 'Languages' },
   { ...C('Write Smarter with Overleaf & LaTeX', 'Coursera', 'Coursera Write smarter with overleaf and latex'), cat: 'Professional' },
   { ...C('Accelerate Your Job Search with AI', 'Google · Coursera', 'Coursera Accelerate your job search with AI'), cat: 'Professional' },
